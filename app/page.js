@@ -164,7 +164,9 @@ export default function Home() {
 <footer className="flex flex-col items-center justify-center text-center py-12 border-t border-gray-700/50">
   <p className="font-logo text-3xl bg-gradient-to-r from-green-400 via-emerald-500 to-cyan-400 bg-clip-text text-transparent"
      style={{ textShadow: "0 0 12px rgba(16,185,129,0.8)" }}>
-    © {new Date().getFullYear()} nmProfessor. All rights reserved.
+    © {new Date().getFullYear()} nmProfessor.
+    <br />
+     All rights reserved.
   </p>
 </footer>
 
