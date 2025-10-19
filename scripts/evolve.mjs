@@ -7,7 +7,7 @@ import 'dotenv/config';
 import OpenAI from 'openai';
 import lighthouse from 'lighthouse';
 import * as chromeLauncher from 'chrome-launcher';
-import simpleGit from 'simple-git'; // Import simple-git
+import simpleGit from 'simple-git';
 
 const execPromise = promisify(exec);
 
@@ -20,9 +20,9 @@ const TARGET_FILE = 'page.js';
 
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-const git = simpleGit(); // Initialize git
+const git = simpleGit();
 
-// --- (Audit and Critique functions remain the same) ---
+// --- (Audit, Critique, and Modify functions remain the same) ---
 
 // --- 1. AUDIT (Self-Inspection) ---
 async function runAudit() {
@@ -102,49 +102,58 @@ async function generateModification(critique, sourceCode) {
     const completion = await openai.chat.completions.create({ model: 'gpt-4o', messages: [{ role: 'user', content: prompt }] });
     const modifiedCode = completion.choices[0].message.content.replace(/```javascript|```/g, '').trim();
 
-    // We no longer write a versioned file, we'll let git handle versioning.
     const targetPath = path.join(SRC_DIR, TARGET_FILE);
     fs.writeFileSync(targetPath, modifiedCode);
 
     console.log(`✅ Modification has been written to ${targetPath}`);
-    return targetPath; // Return the path of the file that was changed
+    return targetPath;
 }
 
 // --- 4. APPLY (Approval Layer & Git Commit) ---
-function applyModification(modifiedFilePath, branchName) {
+async function applyModification(modifiedFilePath, branchName, autoApprove = false) {
     const originalPath = path.join(SRC_DIR, TARGET_FILE);
     console.log('\n--- [ Proposed Modification ] ---');
     console.log(fs.readFileSync(modifiedFilePath, 'utf-8'));
     console.log('---------------------------------');
 
+    const performCommit = async () => {
+        try {
+            await git.add(modifiedFilePath);
+            await git.commit(`feat(evolve): AI-driven modification based on self-critique`);
+            await git.checkout('main');
+            await git.merge([branchName]);
+            await git.branch(['-d', branchName]);
+            console.log(`✅ Changes committed and merged into main. Branch ${branchName} deleted.`);
+            return true;
+        } catch (e) {
+            console.error('❌ Git operation failed:', e);
+            await git.checkout('main');
+            await git.branch(['-D', branchName]);
+            return false;
+        }
+    };
+
+    if (autoApprove) {
+        console.log('✅ Auto-approving changes...');
+        return await performCommit();
+    }
+
     return new Promise((resolve) => {
         rl.question('Do you approve and want to commit this change? (y/n): ', async (answer) => {
+            rl.close();
             if (answer.toLowerCase() === 'y') {
-                try {
-                    await git.add(modifiedFilePath);
-                    await git.commit(`feat(evolve): AI-driven modification based on self-critique`);
-                    await git.checkout('main'); // Or your primary branch
-                    await git.merge([branchName]);
-                    await git.branch(['-d', branchName]);
-                    console.log(`✅ Changes committed and merged into main. Branch ${branchName} deleted.`);
-                    resolve(true);
-                } catch (e) {
-                    console.error('❌ Git operation failed:', e);
-                    resolve(false);
-                }
+                resolve(await performCommit());
             } else {
                 console.log('❌ Modification rejected. Reverting changes...');
-                await git.checkout(originalPath); // Revert the file
+                await git.checkout(originalPath);
                 await git.checkout('main');
-                await git.branch(['-D', branchName]); // Force delete the branch
+                await git.branch(['-D', branchName]);
                 console.log('Changes have been reverted.');
                 resolve(false);
             }
-            rl.close();
         });
     });
 }
-
 
 // --- Main Evolution Loop ---
 async function evolve() {
@@ -159,11 +168,11 @@ async function evolve() {
         return;
     }
 
+    const autoApprove = process.argv.includes('--auto-approve');
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const branchName = `evolve/${timestamp}`;
 
     try {
-        // Create a new branch for this evolution
         await git.checkout(['-b', branchName]);
         console.log(`🚀 Created new evolution branch: ${branchName}`);
 
@@ -171,13 +180,12 @@ async function evolve() {
         const critique = await generateCritique(auditPath);
         const sourceCode = fs.readFileSync(path.join(SRC_DIR, TARGET_FILE), 'utf-8');
         const modifiedFilePath = await generateModification(critique, sourceCode);
-        await applyModification(modifiedFilePath, branchName);
+        await applyModification(modifiedFilePath, branchName, autoApprove);
 
         console.log('\n✨ Evolution cycle complete.');
 
     } catch (error) {
         console.error('\nAn error occurred during the evolution cycle:', error);
-        // Attempt to clean up the failed branch
         await git.checkout('main');
         await git.branch(['-D', branchName]);
         process.exit(1);

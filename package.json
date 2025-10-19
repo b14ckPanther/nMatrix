@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "evolve": "node scripts/evolve.mjs"
+    "evolve": "node scripts/evolve.mjs",
+    "evolve:auto": "node scripts/evolve.mjs --auto-approve"
   },
   "dependencies": {
     "dotenv": "^16.3.1",
@@ -17,17 +18,17 @@
     "openai": "^4.20.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "simple-git": "^3.28.0"
+    "simple-git": "^3.22.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "autoprefixer": "^10.4.21",
-    "axe-core": "^4.8.2",
-    "chrome-launcher": "^0.15.2",
     "eslint": "^9",
     "eslint-config-next": "15.5.3",
-    "lighthouse": "^11.3.0",
     "postcss": "^8.5.6",
-    "tailwindcss": "^3.4.17"
+    "tailwindcss": "^3.4.17",
+    "lighthouse": "^11.3.0",
+    "chrome-launcher": "^0.15.2",
+    "axe-core": "^4.8.2"
   }
 }
