@@ -1,4 +1,3 @@
-jsx
 "use client";
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
