@@ -1,5 +1,5 @@
 {
-  "name": "nmatrix",
+"name": "nmatrix",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,9 +8,11 @@
     "start": "next start",
     "lint": "eslint",
     "evolve": "node scripts/evolve.mjs",
-    "evolve:auto": "node scripts/evolve.mjs --auto-approve"
+    "evolve:auto": "node scripts/evolve.mjs --auto-approve",
+    "evolve:creative": "node scripts/evolve:creative.mjs --auto-approve"
   },
-  "dependencies": {
+
+"dependencies": {
     "dotenv": "^16.3.1",
     "framer-motion": "^12.23.16",
     "lucide-react": "^0.544.0",
