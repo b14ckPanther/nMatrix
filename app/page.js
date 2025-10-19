@@ -1,3 +1,4 @@
+jsx
 "use client";
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
@@ -104,7 +105,12 @@ export default function Home() {
           pushes the boundaries of design, intelligence, and creativity on the
           web.
         </motion.p>
-        <img src="https://via.placeholder.com/400" alt="Placeholder image for testing" className="mx-auto mt-8 rounded-lg" />
+        <img
+          src="https://via.placeholder.com/400"
+          alt="Placeholder image for testing"
+          className="mx-auto mt-8 rounded-lg"
+          loading="lazy"
+        />
       </section>
 
       <section id="contact" className="px-12 py-32 text-center bg-gray-800/30">
@@ -156,8 +162,10 @@ export default function Home() {
       </section>
 
       <footer className="flex flex-col items-center justify-center text-center py-12 border-t border-gray-700/50">
-        <p className="font-logo text-3xl bg-gradient-to-r from-green-400 via-emerald-500 to-cyan-400 bg-clip-text text-transparent"
-          style={{ textShadow: "0 0 12px rgba(16,185,129,0.8)" }}>
+        <p
+          className="font-logo text-3xl bg-gradient-to-r from-green-400 via-emerald-500 to-cyan-400 bg-clip-text text-transparent"
+          style={{ textShadow: "0 0 12px rgba(16,185,129,0.8)" }}
+        >
           © {new Date().getFullYear()} nmProfessor.
           <br />
           All rights reserved.
