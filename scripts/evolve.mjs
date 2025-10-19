@@ -87,7 +87,11 @@ async function generateCritique(auditPath) {
 // --- 3. MODIFY (Self-Modification) ---
 async function generateModification(critique, sourceCode) {
     console.log('\n🤖 Generating code modifications based on critique...');
-    const prompt = `You are nMatrix, an AI engineer rewriting your own code. Based on the critique, rewrite the React component below. Respond ONLY with the full, updated code. Do not add explanations.
+    const prompt = `You are nMatrix, an AI engineer rewriting your own code. Based on the critique, rewrite the React component below. Adhere to these critical rules:
+    
+    1.  **'use client' is sacred**: If the file begins with "use client", it MUST remain the absolute first line of the file. No code or comments can come before it.
+    2.  **Respond ONLY with code**: Do not include explanations, apologies, or markdown formatting around the code. Just the raw, full file content.
+    3.  **Focus on the critique**: Only apply changes directly related to the provided critique. Do not add new features or change the visual style.
 
     **CRITIQUE:**
     ---
