@@ -7,11 +7,11 @@ module.exports = {
     "./pages/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
   ],
-theme: {
+  theme: {
     extend: {
       fontFamily: {
         'logo': ['"Dancing Script"', 'cursive'],
-          'sans': ['Exo 2', ...defaultTheme.fontFamily.sans],
+        'sans': ['Exo 2', ...defaultTheme.fontFamily.sans],
       },
       backgroundImage: {
         'grid': 'linear-gradient(to right, theme(colors.cyan.400/0.1) 1px, transparent 1px), linear-gradient(to bottom, theme(colors.cyan.400/0.1) 1px, transparent 1px)',
@@ -19,7 +19,13 @@ theme: {
       },
       backgroundSize: {
         'grid-size': '40px 40px',
-      }
+      },
+      colors: {
+        'modern-purple': '#8b5cf6',
+      },
+      gradientColorStops: {
+        'hero': ['#38b2ac', '#8b5cf6', '#06b6d4'],
+      },
     },
   },
   plugins: [],
