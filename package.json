@@ -8,8 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "evolve": "node scripts/evolve.mjs",
-    "evolve:auto": "node scripts/evolve.mjs --auto-approve",
-    "evolve:creative": "node scripts/evolve-creative.mjs --auto-approve"
+    "evolve:auto": "node scripts/evolve.mjs --auto-approve"
   },
   "dependencies": {
     "dotenv": "^16.3.1",
