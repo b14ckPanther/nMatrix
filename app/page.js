@@ -1,6 +1,7 @@
 "use client";
 import { motion } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
+import FeatureBox from '../components/FeatureBox';
 
 // Home Component
 export default function Home() {
@@ -13,7 +14,7 @@ export default function Home() {
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
-
+  
   return (
     <main className='min-h-screen bg-gradient-to-b from-gray-900 via-black to-gray-900 text-white scroll-smooth'>
       <motion.div
@@ -54,11 +55,11 @@ export default function Home() {
         <h2 className='text-4xl font-bold mb-12 font-logo text-emerald-400'>
           Features
         </h2>
-        <div className='grid md:grid-cols-3 gap-8'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10'>
           {[
             {
               title: "Adaptive Intelligence",
-              desc: "Monitors itself and identifies strengths and weaknesses in real time."
+              desc: "Monitors itself and identifies strengths and weaknesses in real-time."
             },
             {
               title: "Dynamic Design",
@@ -69,19 +70,7 @@ export default function Home() {
               desc: "Learns from users and adapts to trends, keeping it always ahead."
             }
           ].map((feature, index) => (
-            <motion.div
-              key={index}
-              className='bg-gray-800/50 p-8 rounded-2xl shadow-lg hover:shadow-[0_0_20px_rgba(16,185,129,0.6)] transition transform hover:-translate-y-2 hover:scale-105'
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.3, duration: 0.8 }}
-              viewport={{ once: true }}
-            >
-              <h3 className='text-2xl font-bold mb-4 text-emerald-400'>
-                {feature.title}
-              </h3>
-              <p className='text-gray-400'>{feature.desc}</p>
-            </motion.div>
+            <FeatureBox key={index} title={feature.title} desc={feature.desc} />
           ))}
         </div>
       </section>
