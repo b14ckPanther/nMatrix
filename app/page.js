@@ -1,4 +1,4 @@
-"use client";
+use client";
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 
@@ -29,7 +29,7 @@ export default function Home() {
       >
         <MagneticEffect strength={20}>
           <motion.h1
-            className="font-logo font-bold text-8xl md:text-9xl bg-gradient-to-r from-green-400 via-emerald-500 to-cyan-400 bg-clip-text text-transparent animate-gradient"
+            className="font-logo font-bold text-8xl md:text-9xl bg-gradient-to-r from-green-400 via-emerald-500 to-cyan-400 bg-clip-text text-transparent animate-gradient glitch-text"
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
