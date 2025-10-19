@@ -31,7 +31,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
         <MagneticEffect strength={20}>
           <motion.h1
-            className="font-logo font-bold text-8xl md:text-9xl bg-gradient-to-r from-green-400 via-emerald-500 to-cyan-400 bg-clip-text text-transparent animate-gradient"
+            className="font-logo font-bold text-8xl md:text-9xl bg-gradient-to-r from-modern-purple via-green-400 to-cyan-400 bg-clip-text text-transparent animate-gradient"
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
