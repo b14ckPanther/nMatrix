@@ -38,7 +38,11 @@
   animation: underline-pulse 2s ease-in-out infinite;
 }
 
-/* Styles specific to the BentoBox component */
+.neon-text {
+  color: #00f6ff;
+  text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 15px #0ff;
+}
+
 .bento-box {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
