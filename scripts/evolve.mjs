@@ -6,7 +6,6 @@ import { promisify } from 'util';
 import 'dotenv/config';
 import OpenAI from 'openai';
 import simpleGit from 'simple-git';
-import https from 'https';
 
 const execPromise = promisify(exec);
 
@@ -36,10 +35,10 @@ async function evolve() {
     }
     
     const autoApprove = process.argv.includes('--auto-approve');
-    const evolutionGoal = `Radically redesign the hero section. Your goal is to create a more dynamic, visually stunning, and modern user experience. You have permission to change colors, animations, layout, and even add a new, relevant hero image.`;
+    const evolutionGoal = "Analyze the hero section and navbar. Propose a single, impactful change to make the UI more modern and visually appealing. Consider a color, animation, or layout tweak. For example, you could change a gradient in tailwind.config.js or adjust an animation in Navbar.js.";
 
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const branchName = `evolve/creative-${timestamp}`;
+    const branchName = `evolve/ui-creative-${timestamp}`;
 
     try {
         await git.checkout(['-b', branchName]);
@@ -66,65 +65,37 @@ async function evolve() {
 }
 
 async function generateCreativeModification(goal) {
-    console.log('\n🤖 Gathering inspiration from the web...');
-    // In a real scenario, you would use a web search tool here.
-    // For now, we'll simulate the results.
-    const inspiration = {
-        trends: "Current trends include glassmorphism, aurora gradients, and bento box layouts.",
-        imageUrl: "https://images.unsplash.com/photo-1554034483-04fda0d3507b?q=80&w=2070" // Example image
-    };
-
-    console.log(`Inspiration: ${inspiration.trends}`);
-    console.log(`Selected Image URL: ${inspiration.imageUrl}`);
-
     console.log('\n🤖 Reading project files to build context...');
+    
     const fileContents = UI_FILES.map(filePath => {
         const content = fs.readFileSync(filePath, 'utf-8');
         return `--- FILE: ${filePath} ---\n${content}`;
     }).join('\n\n');
 
     const prompt = `
-        You are nMatrix, a world-class UI/UX designer AI with the power to write code. Your mission is to perform a radical redesign of your own frontend.
-
+        You are nMatrix, a senior UI/UX designer and developer AI. Your task is to creatively evolve your own frontend.
+        
         **Your Goal:** ${goal}
 
-        **Inspiration from the Web:**
-        - Current Trends: ${inspiration.trends}
-        - Suggested Image: I have found a high-quality, royalty-free image you can use at this URL: ${inspiration.imageUrl}
-
-        **Your Project Files:**
+        **Project Files:**
+        I have provided you with the content of the following files: ${UI_FILES.join(', ')}.
         ${fileContents}
 
         **Instructions:**
-        1.  Analyze the project files and the provided inspiration.
-        2.  Propose a set of changes to achieve the goal. You can modify existing files, create new ones, and add the suggested image.
-        3.  If you add the image, place it in the \`/public\` directory and name it \`hero-background.jpg\`.
-        4.  Respond with a JSON object. Do not include any other text. The JSON should have a \`changes\` array, where each object has a \`filePath\` and \`newContent\`.
+        1.  Analyze all the provided files to understand the project's structure and styling.
+        2.  Decide on a single, targeted code change in ONE of the files to achieve the goal.
+        3.  Adhere to this critical rule: If you edit a file that begins with "use client", it MUST remain the absolute first line.
+        4.  Respond with a JSON object in the following format. Do not include any other text or markdown.
             \`\`\`json
             {
-              "thoughtProcess": "My plan to redesign the hero section based on the trends and image.",
-              "changes": [
-                {
-                  "filePath": "public/hero-background.jpg",
-                  "action": "CREATE_IMAGE",
-                  "url": "${inspiration.imageUrl}"
-                },
-                {
-                  "filePath": "app/globals.css",
-                  "action": "MODIFY",
-                  "newContent": "/* CSS content... */"
-                },
-                {
-                  "filePath": "app/page.js",
-                  "action": "MODIFY",
-                  "newContent": "// JSX content..."
-                }
-              ]
+              "fileToModify": "path/to/your/chosen/file.js",
+              "thoughtProcess": "A brief explanation of why you chose this change.",
+              "newContent": "The entire, updated content of the file you chose to modify."
             }
             \`\`\`
     `;
 
-    console.log('🤖 Generating creative redesign...');
+    console.log('🤖 Generating creative modification...');
     const completion = await openai.chat.completions.create({
         model: 'gpt-4o',
         messages: [{ role: 'user', content: prompt }],
@@ -133,75 +104,56 @@ async function generateCreativeModification(goal) {
 
     try {
         const modification = JSON.parse(completion.choices[0].message.content);
-        console.log(`✅ AI has proposed a redesign. Thought: ${modification.thoughtProcess}`);
+        if (!modification.fileToModify || !modification.newContent) {
+            throw new Error("AI response is missing required fields.");
+        }
+        console.log(`✅ AI has proposed a change for: ${modification.fileToModify}`);
+        console.log(`   Thought: ${modification.thoughtProcess}`);
         return modification;
     } catch (error) {
         console.error('Error parsing AI response:', error);
+        console.log('Raw AI Response:', completion.choices[0].message.content);
         return null;
     }
 }
 
-async function applyModification({ changes }, branchName, autoApprove = false) {
-    console.log('\n--- [ Proposed Changes ] ---');
-    for (const change of changes) {
-        console.log(`- ${change.action} ${change.filePath}`);
-    }
-    console.log('---------------------------');
+function applyModification({ fileToModify, newContent }, branchName, autoApprove = false) {
+    console.log('\n--- [ Proposed Modification ] ---');
+    console.log(newContent);
+    console.log('---------------------------------');
 
     const performCommit = async () => {
         try {
-            for (const change of changes) {
-                if (change.action === 'CREATE_IMAGE') {
-                    await downloadImage(change.url, change.filePath);
-                } else { // MODIFY
-                    fs.writeFileSync(change.filePath, change.newContent);
-                }
-                await git.add(change.filePath);
-            }
-            await git.commit(`feat(evolve): AI creative redesign`);
+            fs.writeFileSync(fileToModify, newContent);
+            await git.add(fileToModify);
+            await git.commit(`feat(evolve): AI creative UI modification for ${fileToModify}`);
             await git.checkout('main');
             await git.merge([branchName]);
             await git.branch(['-d', branchName]);
-            console.log(`✅ Redesign committed and merged into main.`);
+            console.log(`✅ Changes committed and merged into main.`);
             return true;
         } catch (e) {
             console.error('❌ Git operation failed:', e);
             return false;
         }
     };
-    
+
     if (autoApprove) {
-        console.log('✅ Auto-approving redesign...');
-        return await performCommit();
+        console.log('✅ Auto-approving changes...');
+        return performCommit();
     }
 
     return new Promise((resolve) => {
-        rl.question(`Do you approve committing this redesign? (y/n): `, async (answer) => {
+        rl.question(`Do you approve committing this change to ${fileToModify}? (y/n): `, async (answer) => {
             rl.close();
             if (answer.toLowerCase() === 'y') {
                 resolve(await performCommit());
             } else {
-                console.log('❌ Redesign rejected. Reverting branch...');
+                console.log('❌ Modification rejected. Reverting branch...');
                 await git.checkout('main');
                 await git.branch(['-D', branchName]);
                 resolve(false);
             }
-        });
-    });
-}
-
-function downloadImage(url, filepath) {
-    return new Promise((resolve, reject) => {
-        https.get(url, (res) => {
-            const fileStream = fs.createWriteStream(filepath);
-            res.pipe(fileStream);
-            fileStream.on('finish', () => {
-                fileStream.close();
-                console.log(`Downloaded image to ${filepath}`);
-                resolve();
-            });
-        }).on('error', (err) => {
-            reject(err);
         });
     });
 }
