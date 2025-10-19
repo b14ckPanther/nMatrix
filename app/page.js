@@ -40,7 +40,7 @@ export default function Home() {
           </motion.h1>
         </MagneticEffect>
         <motion.p
-          className='mt-6 text-xl text-gray-300 max-w-2xl mx-auto font-[\'Exo_2\'] glass backdrop-blur-md p-4 rounded-lg'
+          className='mt-6 text-xl text-gray-300 max-w-2xl mx-auto font-sans glass backdrop-blur-md p-4 rounded-lg'
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 1 }}
@@ -92,7 +92,7 @@ export default function Home() {
           About
         </h2>
         <motion.p
-          className='text-gray-400 max-w-2xl mx-auto font-[\'Exo_2\']'
+          className='text-gray-400 max-w-2xl mx-auto font-sans'
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
@@ -106,6 +106,8 @@ export default function Home() {
           alt='Placeholder image for testing'
           className='mx-auto mt-8 rounded-lg'
           loading='lazy'
+          width="400"
+          height="400"
         />
       </section>
 
@@ -115,7 +117,7 @@ export default function Home() {
           Get in Touch
         </h2>
         <motion.p
-          className='text-gray-400 max-w-2xl mx-auto font-[\'Exo_2\'] mb-8'
+          className='text-gray-400 max-w-2xl mx-auto font-sans mb-8'
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
