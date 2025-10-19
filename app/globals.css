@@ -5,6 +5,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* New Glassmorphism class */
+.glass {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
 @keyframes glitch {
   0% { clip-path: inset(55% 0 23% 0); transform: translate(-2%, 5%); }
   10% { clip-path: inset(54% 0 8% 0); transform: translate(3%, -2%); }

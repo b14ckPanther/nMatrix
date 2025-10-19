@@ -25,11 +25,13 @@ export default function Home() {
 
       <section
         id="hero"
-        className="flex flex-col items-center justify-center text-center py-32 px-6"
+        className="flex flex-col items-center justify-center text-center py-32 px-6 bg-cover bg-center relative"
+        style={{ backgroundImage: 'url(/hero-background.jpg)' }}
       >
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
         <MagneticEffect strength={20}>
           <motion.h1
-            className="font-logo font-bold text-8xl md:text-9xl bg-gradient-to-r from-green-400 via-emerald-500 to-cyan-400 bg-clip-text text-transparent animate-gradient glitch-text"
+            className="font-logo font-bold text-8xl md:text-9xl bg-gradient-to-r from-green-400 via-emerald-500 to-cyan-400 bg-clip-text text-transparent animate-gradient"
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
@@ -38,7 +40,7 @@ export default function Home() {
           </motion.h1>
         </MagneticEffect>
         <motion.p
-          className="mt-6 text-xl text-gray-300 max-w-2xl mx-auto font-['Exo_2']"
+          className="mt-6 text-xl text-gray-300 max-w-2xl mx-auto font-['Exo_2'] glass backdrop-blur-md p-4 rounded-lg"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 1 }}
@@ -99,7 +101,7 @@ export default function Home() {
           viewport={{ once: true }}
         >
           <span className="text-emerald-400 font-semibold">nMatrix</span> is not
-          just a site — it’s an evolving digital entity. Designed by{" "}
+          just a site — it’s an evolving digital entity. Designed by {" "}
           <span className="font-semibold text-emerald-400">nmProfessor</span>, it
           pushes the boundaries of design, intelligence, and creativity on the
           web.
