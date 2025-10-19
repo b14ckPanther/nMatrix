@@ -104,6 +104,7 @@ export default function Home() {
           pushes the boundaries of design, intelligence, and creativity on the
           web.
         </motion.p>
+        <img src="https://via.placeholder.com/400" alt="Placeholder image for testing" className="mx-auto mt-8 rounded-lg" />
       </section>
 
       <section id="contact" className="px-12 py-32 text-center bg-gray-800/30">
