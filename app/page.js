@@ -16,7 +16,6 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-gray-900 via-black to-gray-900 text-white scroll-smooth">
-      {/* Spotlight */}
       <motion.div
         className="pointer-events-none fixed inset-0 z-30 transition duration-300"
         style={{
@@ -24,7 +23,6 @@ export default function Home() {
         }}
       />
 
-      {/* Hero */}
       <section
         id="hero"
         className="flex flex-col items-center justify-center text-center py-32 px-6"
@@ -51,7 +49,6 @@ export default function Home() {
         </motion.p>
       </section>
 
-      {/* Features */}
       <section id="features" className="px-12 py-32 text-center">
         <Divider />
         <h2 className="text-4xl font-bold mb-12 font-logo text-emerald-400">
@@ -89,7 +86,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* About */}
       <section id="about" className="px-12 py-32 text-center">
         <Divider />
         <h2 className="text-4xl font-bold mb-6 font-logo text-emerald-400">
@@ -110,7 +106,6 @@ export default function Home() {
         </motion.p>
       </section>
 
-      {/* Contact */}
       <section id="contact" className="px-12 py-32 text-center bg-gray-800/30">
         <Divider />
         <h2 className="text-4xl font-bold mb-6 font-logo text-emerald-400">
@@ -127,7 +122,6 @@ export default function Home() {
           part of the evolution.
         </motion.p>
 
-        {/* Buttons */}
         <div className="flex flex-col sm:flex-row gap-6 justify-center">
           <motion.a
             href="mailto:nmCryptoinvest@gmail.com"
@@ -160,16 +154,14 @@ export default function Home() {
         </div>
       </section>
 
-     {/* Footer */}
-<footer className="flex flex-col items-center justify-center text-center py-12 border-t border-gray-700/50">
-  <p className="font-logo text-3xl bg-gradient-to-r from-green-400 via-emerald-500 to-cyan-400 bg-clip-text text-transparent"
-     style={{ textShadow: "0 0 12px rgba(16,185,129,0.8)" }}>
-    © {new Date().getFullYear()} nmProfessor.
-    <br />
-     All rights reserved.
-  </p>
-</footer>
-
+      <footer className="flex flex-col items-center justify-center text-center py-12 border-t border-gray-700/50">
+        <p className="font-logo text-3xl bg-gradient-to-r from-green-400 via-emerald-500 to-cyan-400 bg-clip-text text-transparent"
+          style={{ textShadow: "0 0 12px rgba(16,185,129,0.8)" }}>
+          © {new Date().getFullYear()} nmProfessor.
+          <br />
+          All rights reserved.
+        </p>
+      </footer>
     </main>
   );
 }

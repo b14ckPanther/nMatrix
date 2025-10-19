@@ -179,3 +179,8 @@ next-env.d.ts
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 >>>>>>> b8365ff63b7ce4a196500a87f8d491b91f97c46b
+
+# nMatrix Generated Artifacts
+/audits
+/critiques
+*.bak

@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Meta Website",
-  description: "A website that evolves by itself",
+  title: "nMatrix",
+  description: "A living website that adapts, critiques, and redesigns itself.",
 };
 
 export default function RootLayout({ children }) {
