@@ -22,7 +22,6 @@ const rl = readline.createInterface({ input: process.stdin, output: process.stdo
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const git = simpleGit();
 
-// --- THE DREAM ENGINE: A list of creative missions for the AI ---
 const creativeMissions = [
     "Introduce a completely new, vibrant color palette. Modify tailwind.config.js and update class names in the components to reflect a 'Solar Flare' theme (oranges, yellows, deep purples).",
     "Redesign the 'Features' section into a more modern 'Bento Box' layout. This will require significant changes to app/page.js and potentially app/globals.css.",
@@ -34,7 +33,6 @@ const creativeMissions = [
     "Incorporate a background image into the hero section to make it more visually stunning. Find a suitable high-quality, royalty-free image and integrate it with the existing styles."
 ];
 
-// --- Main Evolution Function ---
 async function evolve() {
     if (!process.env.OPENAI_API_KEY) {
         console.error('❌ OPENAI_API_KEY is not set.');
@@ -102,28 +100,23 @@ async function generateCreativeModification(goal) {
         **Your Powers & Rules:**
         - You can MODIFY existing files.
         - You can CREATE new component files in 'components/'.
-        - You can ADD new images to 'public/'. **Crucially, file paths in your response must be relative (e.g., 'public/image.jpg', NOT '/public/image.jpg').**
-        - If you create a new component, you MUST import and use it in 'app/page.js'.
+        - You can ADD new images to 'public/'. File paths must be relative (e.g., 'public/image.jpg').
         - If you need an image, use a URL from unsplash.com.
-        - **SELF-VERIFICATION RULE (CRITICAL):** If you import a new component, you MUST include a "CREATE" action for that component's file.
-        - **Critical Rule:** The "use client" directive MUST be the absolute first line of any file that requires it.
-        - **Critical Rule:** Use 'font-sans' for 'Exo 2' font, do not use arbitrary values like 'font-['Exo_2']'.
+        - **NEW CRITICAL RULE:** If you create a new component that uses React Hooks (like useState, useEffect, useRef), you MUST add "use client"; as the absolute first line of that new file's content.
+        - **SELF-VERIFICATION RULE:** If you import a new component, you MUST include a "CREATE" action for that component's file.
+        - **Critical Rule:** The "use client" directive MUST be the absolute first line of any existing file you modify that requires it.
+        - **Critical Rule:** Use 'font-sans' for 'Exo 2' font.
 
         **Your Response:**
         Respond ONLY with a valid JSON object with a 'thoughtProcess' and a 'changes' array.
             \`\`\`json
             {
-              "thoughtProcess": "My mission is to [Your chosen mission]. To do this, I will [Your plan]. I have double-checked all file paths are relative and that all new components are created.",
+              "thoughtProcess": "My mission is to [Your chosen mission]. To do this, I will [Your plan]. I have double-checked all rules, especially the 'use client' directive for new components.",
               "changes": [
                 {
-                  "filePath": "public/new-image.jpg",
-                  "action": "CREATE_IMAGE",
-                  "url": "https://images.unsplash.com/..."
-                },
-                {
-                  "filePath": "components/NewComponent.js",
+                  "filePath": "components/NewInteractiveComponent.js",
                   "action": "CREATE",
-                  "newContent": "export default function NewComponent() { ... }"
+                  "newContent": "'use client';\\n\\nimport { useState } from 'react';\\n\\nexport default function NewInteractiveComponent() { ... }"
                 }
               ]
             }
@@ -166,7 +159,7 @@ async function applyModification({ changes }, branchName, autoApprove = false) {
 
                 if (change.action === 'CREATE_IMAGE') {
                     await downloadImage(change.url, correctedFilePath);
-                } else { // CREATE or MODIFY
+                } else {
                     fs.writeFileSync(correctedFilePath, change.newContent);
                 }
                 await git.add(correctedFilePath);
