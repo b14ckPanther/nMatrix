@@ -1,3 +1,4 @@
+
 "use client";
 import { motion } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
@@ -5,12 +6,14 @@ import MagneticEffect from '../components/MagneticEffect';
 import Divider from '../components/Divider';
 import BentoBox from '../components/BentoBox';
 import RetroFuturismComponent from '../components/RetroFuturismComponent';
+import ARComponent from '../components/ARComponent';
 
 export default function Page() {
   return (
     <>
       <section id='hero' className='h-screen bg-cover bg-center' style={{backgroundImage: "url('/retro-futuristic-background.jpg')"}}>
         <RetroFuturismComponent />
+        <ARComponent />
       </section>
       <section id='features' className='px-12 py-32 text-center'>
         <Divider />
