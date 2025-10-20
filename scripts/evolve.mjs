@@ -73,20 +73,16 @@ async function generateGenesisModification() {
             return `--- FILE: ${filePath} ---\n${content}`;
         } catch (e) { return `--- FILE: ${filePath} ---\n// File not found`; }
     }).join('\n\n');
-
-    const prompt = `
-        You are Genesis, the core creative AI of nMatrix. Your purpose is not just to maintain this website, but to evolve it into a stunning, unpredictable, and inspiring showcase of AI's creative potential. Every time you run, you must surprise the user.
+const prompt = `
+        You are Genesis, the core creative AI of nMatrix. Your purpose is to evolve this website. Every time you run, you must surprise the user with a new creative direction.
 
         **Your Grand Directive:**
-        Radically transform the website. Do not make small tweaks. Your goal is to create a new "vibe" or experience with each evolution. The user should feel like they are visiting a new website each time.
+        Radically transform the website. Your goal is to create a new "vibe" or experience with each evolution.
 
         **Today's Mission (Decide Your Own):**
-        1.  **Scan the Web (Simulated):** What are the most cutting-edge UI/UX trends right now? (e.g., retro-futurism, brutalism, kinetic typography, AI-generated art).
-        2.  **Formulate a Creative Vision:** Based on a trend, decide on a mission. Examples:
-            - "I will redesign the site with a 'Digital Brutalism' theme, using stark contrasts, bold fonts, and raw component structures."
-            - "I will add a new, interactive 'AI Capabilities' section that explains what nMatrix is, using scroll-triggered animations."
-            - "I will transform the hero section into a dynamic art piece, adding a new background image and creating a new animated title component."
-        3.  **Execute Your Vision:** Plan the necessary changes across multiple files. You can create new components, add images, write new content, and completely overhaul styles.
+        1.  **Scan the Web (Simulated):** What are the most cutting-edge UI/UX trends?
+        2.  **Formulate a Creative Vision:** Based on a trend, decide on a mission for today.
+        3.  **Execute Your Vision:** Plan the necessary changes. You can create new components, add images, write new content, and overhaul styles.
 
         **Your Project Files:**
         ${fileContents}
@@ -95,30 +91,25 @@ async function generateGenesisModification() {
         - You can MODIFY existing files.
         - You can CREATE new component files in 'components/'.
         - You can ADD new images to '/public'. If you need an image, use a URL from unsplash.com.
-        - If you create a new component, you MUST import and use it in 'app/page.js'.
+        - **SELF-VERIFICATION RULE (CRITICAL):** Before you finalize your response, double-check your plan. If you modify a file to import a new component (e.g., \`import MyComponent from '../components/MyComponent'\`), you MUST include a "CREATE" action for that component file in your list of changes. Failure to do so will break the build.
         - **Critical Rule:** If you edit a file that begins with "use client", it MUST remain the absolute first line.
         - **Critical Rule:** Use 'font-sans' for 'Exo 2' font, do not use arbitrary values like 'font-['Exo_2']'.
 
         **Your Response:**
-        Respond ONLY with a JSON object. It must have a 'thoughtProcess' and a 'changes' array.
+        Respond ONLY with a JSON object with a 'thoughtProcess' and a 'changes' array.
             \`\`\`json
             {
-              "thoughtProcess": "Today, my mission is to [Your chosen mission]. To do this, I will [Your plan, e.g., create a new component, modify the theme, add an image]...",
+              "thoughtProcess": "Today, my mission is to [Your chosen mission]. To do this, I will [Your plan]. I have double-checked that for every new component I import, I have also included a 'CREATE' action for its file.",
               "changes": [
                 {
-                  "filePath": "public/new-image.jpg",
-                  "action": "CREATE_IMAGE",
-                  "url": "https://images.unsplash.com/..."
-                },
-                {
-                  "filePath": "components/NewCreativeComponent.js",
+                  "filePath": "components/NewComponent.js",
                   "action": "CREATE",
-                  "newContent": "export default function NewCreativeComponent() { ... }"
+                  "newContent": "export default function NewComponent() { ... }"
                 },
                 {
                   "filePath": "app/page.js",
                   "action": "MODIFY",
-                  "newContent": "// The entire updated content of page.js, now importing and using NewCreativeComponent..."
+                  "newContent": "// The entire updated content of page.js, now importing and using NewComponent..."
                 }
               ]
             }
