@@ -1,3 +1,4 @@
+
 import "use client";
 import { motion } from 'framer-motion';
 import MagneticEffect from '../components/MagneticEffect';

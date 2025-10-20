@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,300;0,400;0,700;1,400&display=swap');
 
@@ -70,3 +71,4 @@
 .bg-starfield {
   background-image: radial-gradient(1.5px 1.5px at 25px 5px, white, transparent), radial-gradient(1.5px 1.5px at 50px 25px, white, transparent), radial-gradient(2px 2px at 150px 70px, white, transparent), radial-gradient(2px 2px at 90px 120px, white, transparent), radial-gradient(2.5px 2.5px at 200px 150px, white, transparent);
 }
+
