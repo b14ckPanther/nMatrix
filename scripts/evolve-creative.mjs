@@ -22,7 +22,6 @@ const rl = readline.createInterface({ input: process.stdin, output: process.stdo
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const git = simpleGit();
 
-// --- THE DREAM ENGINE: A list of creative missions for the AI ---
 const creativeMissions = [
     "Introduce a completely new, vibrant color palette. Modify tailwind.config.js and update class names in the components to reflect a 'Solar Flare' theme (oranges, yellows, deep purples).",
     "Redesign the 'Features' section into a more modern 'Bento Box' layout. This will require significant changes to app/page.js and potentially app/globals.css.",
@@ -34,7 +33,6 @@ const creativeMissions = [
     "Incorporate a background image into the hero section to make it more visually stunning. Find a suitable high-quality, royalty-free image and integrate it with the existing styles."
 ];
 
-// --- Main Evolution Function ---
 async function evolve() {
     if (!process.env.OPENAI_API_KEY) {
         console.error('❌ OPENAI_API_KEY is not set.');
@@ -48,8 +46,6 @@ async function evolve() {
     }
     
     const autoApprove = process.argv.includes('--auto-approve');
-    
-    // RANDOMLY SELECT A MISSION
     const evolutionGoal = creativeMissions[Math.floor(Math.random() * creativeMissions.length)];
     console.log(`\n--- [ NEW MISSION ] ---`);
     console.log(evolutionGoal);
@@ -61,7 +57,6 @@ async function evolve() {
     try {
         await git.checkout(['-b', branchName]);
         console.log(`🚀 Created new evolution branch: ${branchName}`);
-
         const modification = await generateCreativeModification(evolutionGoal);
         
         if (modification) {
@@ -93,31 +88,33 @@ async function generateCreativeModification(goal) {
     }).join('\n\n');
 
     const prompt = `
-        You are nMatrix, a world-class UI/UX designer and developer AI. Your mission is to perform a radical, creative redesign of your own frontend.
+        You are Genesis, the core creative AI of nMatrix. Your purpose is to evolve this website into a stunning, unpredictable showcase of AI's creative potential.
 
-        **Your Mission:** ${goal}
+        **Your Grand Directive:** Radically transform the website. Create a new "vibe" or experience with each evolution.
+
+        **Today's Mission:** ${goal}
 
         **Your Project Files:**
         ${fileContents}
 
-        **Your Powers:**
+        **Your Powers & Rules:**
         - You can MODIFY existing files.
-        - You can CREATE new component files in the 'components/' directory.
-        - You can ADD new images to the '/public' directory.
+        - You can CREATE new component files in 'components/'.
+        - You can ADD new images to 'public/'. **Crucially, file paths in your response must be relative (e.g., 'public/image.jpg', NOT '/public/image.jpg').**
+        - If you create a new component, you MUST import and use it in 'app/page.js'.
+        - If you need an image, use a URL from unsplash.com.
+        - **SELF-VERIFICATION RULE (CRITICAL):** If you import a new component, you MUST include a "CREATE" action for that component's file.
+        - **Critical Rule:** The "use client" directive MUST be the absolute first line of any file that requires it.
+        - **Critical Rule:** Use 'font-sans' for 'Exo 2' font, do not use arbitrary values like 'font-['Exo_2']'.
 
-        **Instructions:**
-        1.  Analyze the project files to understand the current state.
-        2.  Formulate a plan to achieve your mission. This may involve multiple file changes.
-        3.  If you create a new component, you MUST update 'app/page.js' to import and use it.
-        4.  If your mission involves an image, use this URL for a high-quality, royalty-free image: https://images.unsplash.com/photo-1554034483-04fda0d3507b?q=80&w=2070
-        5.  Adhere to this critical rule: If you edit a file that begins with "use client", it MUST remain the absolute first line.
-        6.  Respond with a JSON object. Do not include any other text. The JSON must have a 'thoughtProcess' and a 'changes' array.
+        **Your Response:**
+        Respond ONLY with a valid JSON object with a 'thoughtProcess' and a 'changes' array.
             \`\`\`json
             {
-              "thoughtProcess": "My detailed plan for executing the mission...",
+              "thoughtProcess": "My mission is to [Your chosen mission]. To do this, I will [Your plan]. I have double-checked all file paths are relative and that all new components are created.",
               "changes": [
                 {
-                  "filePath": "public/hero-background.jpg",
+                  "filePath": "public/new-image.jpg",
                   "action": "CREATE_IMAGE",
                   "url": "https://images.unsplash.com/..."
                 },
@@ -125,18 +122,13 @@ async function generateCreativeModification(goal) {
                   "filePath": "components/NewComponent.js",
                   "action": "CREATE",
                   "newContent": "export default function NewComponent() { ... }"
-                },
-                {
-                  "filePath": "app/page.js",
-                  "action": "MODIFY",
-                  "newContent": "// The entire updated content of page.js, including the import for NewComponent..."
                 }
               ]
             }
             \`\`\`
     `;
 
-    console.log('🤖 Generating creative redesign...');
+    console.log('🤖 Formulating a new creative vision...');
     const completion = await openai.chat.completions.create({
         model: 'gpt-4o',
         messages: [{ role: 'user', content: prompt }],
@@ -145,7 +137,9 @@ async function generateCreativeModification(goal) {
 
     try {
         const modification = JSON.parse(completion.choices[0].message.content);
-        console.log(`✅ AI has proposed a redesign. Thought: ${modification.thoughtProcess}`);
+        console.log(`\n--- [ AI Mission Statement ] ---`);
+        console.log(modification.thoughtProcess);
+        console.log(`--------------------------------\n`);
         return modification;
     } catch (error) {
         console.error('Error parsing AI response:', error);
@@ -154,30 +148,35 @@ async function generateCreativeModification(goal) {
 }
 
 async function applyModification({ changes }, branchName, autoApprove = false) {
-    console.log('\n--- [ Proposed Changes ] ---');
+    console.log('--- [ Proposed Changes ] ---');
     changes.forEach(change => console.log(`- ${change.action} ${change.filePath}`));
     console.log('---------------------------');
 
     const performCommit = async () => {
         try {
             for (const change of changes) {
-                const dir = path.dirname(change.filePath);
+                // **THE FIX IS HERE**
+                // Sanitize the file path to ensure it's relative
+                const correctedFilePath = change.filePath.startsWith('/') ? change.filePath.substring(1) : change.filePath;
+                
+                const dir = path.dirname(correctedFilePath);
                 if (!fs.existsSync(dir)) {
                     fs.mkdirSync(dir, { recursive: true });
                 }
 
                 if (change.action === 'CREATE_IMAGE') {
-                    await downloadImage(change.url, change.filePath);
+                    await downloadImage(change.url, correctedFilePath);
                 } else { // CREATE or MODIFY
-                    fs.writeFileSync(change.filePath, change.newContent);
+                    fs.writeFileSync(correctedFilePath, change.newContent);
                 }
-                await git.add(change.filePath);
+                await git.add(correctedFilePath);
             }
-            await git.commit(`feat(evolve): AI creative redesign: ${changes[0].filePath}`);
+            const commitMessage = `feat(evolve): AI creative redesign`;
+            await git.commit(commitMessage);
             await git.checkout('main');
             await git.merge([branchName]);
             await git.branch(['-d', branchName]);
-            console.log(`✅ Redesign committed and merged into main.`);
+            console.log(`✅ New evolution committed and merged into main.`);
             return true;
         } catch (e) {
             console.error('❌ Git operation failed:', e);
@@ -186,16 +185,16 @@ async function applyModification({ changes }, branchName, autoApprove = false) {
     };
     
     if (autoApprove) {
-        console.log('✅ Auto-approving redesign...');
-        return await performCommit();
+        console.log('✅ Auto-approving evolution...');
+        return performCommit();
     }
 
     return new Promise((resolve) => {
-        rl.question(`Do you approve committing this redesign? (y/n): `, async (answer) => {
+        rl.question(`Do you approve this evolution? (y/n): `, async (answer) => {
             rl.close();
             if (answer.toLowerCase() === 'y') resolve(await performCommit());
             else {
-                console.log('❌ Redesign rejected. Reverting branch...');
+                console.log('❌ Evolution rejected. Reverting branch...');
                 await git.checkout('main');
                 await git.branch(['-D', branchName]);
                 resolve(false);
@@ -206,14 +205,10 @@ async function applyModification({ changes }, branchName, autoApprove = false) {
 
 function downloadImage(url, filepath) {
     return new Promise((resolve, reject) => {
+        const fileStream = fs.createWriteStream(filepath);
         https.get(url, (res) => {
-            const fileStream = fs.createWriteStream(filepath);
             res.pipe(fileStream);
-            fileStream.on('finish', () => {
-                fileStream.close();
-                console.log(`Downloaded image to ${filepath}`);
-                resolve();
-            });
+            fileStream.on('finish', () => { fileStream.close(); console.log(`Downloaded image to ${filepath}`); resolve(); });
         }).on('error', (err) => reject(err));
     });
 }
