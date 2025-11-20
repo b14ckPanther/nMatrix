@@ -59,10 +59,13 @@ const dateToTimestamp = (date: Date): Timestamp => {
 const convertTimestamps = <T extends DocumentData>(data: T): T => {
   const converted = { ...data };
   for (const key in converted) {
-    if (converted[key] instanceof Timestamp) {
-      converted[key] = timestampToDate(converted[key] as Timestamp);
-    } else if (converted[key] && typeof converted[key] === 'object') {
-      converted[key] = convertTimestamps(converted[key]);
+    const value = converted[key];
+    if (value && typeof value === 'object' && 'seconds' in value && 'nanoseconds' in value) {
+      // Check if it's a Firestore Timestamp
+      converted[key] = timestampToDate(value as Timestamp);
+    } else if (value && typeof value === 'object' && !Array.isArray(value) && value.constructor === Object) {
+      // Recursively convert nested objects
+      converted[key] = convertTimestamps(value as DocumentData);
     }
   }
   return converted;
