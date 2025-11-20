@@ -85,6 +85,7 @@ const removeUndefinedFields = <T extends Record<string, any>>(data: T): Partial<
 // Versions
 export const versions = {
   async create(version: Omit<VersionDNA, 'id'>): Promise<string> {
+    if (!db) throw new Error('Firestore is not configured');
     const ref = doc(collection(db, COLLECTIONS.VERSIONS));
     const versionData: any = {
       ...version,
@@ -98,6 +99,7 @@ export const versions = {
   },
 
   async get(id: string): Promise<VersionDNA | null> {
+    if (!db) throw new Error('Firestore is not configured');
     const ref = doc(db, COLLECTIONS.VERSIONS, id);
     const snap = await getDoc(ref);
     if (!snap.exists()) return null;
@@ -114,6 +116,7 @@ export const versions = {
   },
 
   async getAll(constraints: QueryConstraint[] = []): Promise<VersionDNA[]> {
+    if (!db) throw new Error('Firestore is not configured');
     const q = query(collection(db, COLLECTIONS.VERSIONS), ...constraints);
     const snapshot = await getDocs(q);
     return snapshot.docs.map((doc) => {
@@ -131,6 +134,7 @@ export const versions = {
   },
 
   async update(id: string, updates: Partial<VersionDNA>): Promise<void> {
+    if (!db) throw new Error('Firestore is not configured');
     const ref = doc(db, COLLECTIONS.VERSIONS, id);
     const updateData: any = { ...updates };
     if (updateData.deployedAt) {
@@ -146,6 +150,7 @@ export const versions = {
 // Reviews
 export const reviews = {
   async create(review: Omit<Review, 'id'>): Promise<string> {
+    if (!db) throw new Error('Firestore is not configured');
     const ref = doc(collection(db, COLLECTIONS.REVIEWS));
     const reviewData: any = {
       ...review,
@@ -158,6 +163,7 @@ export const reviews = {
   },
 
   async getByVersion(versionId: string): Promise<Review[]> {
+    if (!db) throw new Error('Firestore is not configured');
     const q = query(
       collection(db, COLLECTIONS.REVIEWS),
       where('versionId', '==', versionId),
@@ -173,12 +179,14 @@ export const reviews = {
 // Mutations
 export const mutations = {
   async create(mutation: Omit<Mutation, 'id'>): Promise<string> {
+    if (!db) throw new Error('Firestore is not configured');
     const ref = doc(collection(db, COLLECTIONS.MUTATIONS));
     await setDoc(ref, { ...mutation, id: ref.id });
     return ref.id;
   },
 
   async get(id: string): Promise<Mutation | null> {
+    if (!db) throw new Error('Firestore is not configured');
     const ref = doc(db, COLLECTIONS.MUTATIONS, id);
     const snap = await getDoc(ref);
     if (!snap.exists()) return null;
@@ -189,6 +197,7 @@ export const mutations = {
 // Snapshots
 export const snapshots = {
   async create(snapshot: Omit<Snapshot, 'id'>): Promise<string> {
+    if (!db) throw new Error('Firestore is not configured');
     const ref = doc(collection(db, COLLECTIONS.SNAPSHOTS));
     const snapshotData: any = {
       ...snapshot,
@@ -200,6 +209,7 @@ export const snapshots = {
   },
 
   async getLatest(): Promise<Snapshot | null> {
+    if (!db) throw new Error('Firestore is not configured');
     const q = query(
       collection(db, COLLECTIONS.SNAPSHOTS),
       orderBy('createdAt', 'desc'),
@@ -215,6 +225,7 @@ export const snapshots = {
 // Configs
 export const configs = {
   async get(key: string): Promise<Config | null> {
+    if (!db) throw new Error('Firestore is not configured');
     const ref = doc(db, COLLECTIONS.CONFIGS, key);
     const snap = await getDoc(ref);
     if (!snap.exists()) return null;
@@ -222,6 +233,7 @@ export const configs = {
   },
 
   async set(config: Config): Promise<void> {
+    if (!db) throw new Error('Firestore is not configured');
     const ref = doc(db, COLLECTIONS.CONFIGS, config.key);
     const configData: any = {
       ...config,
@@ -234,6 +246,7 @@ export const configs = {
 // Approvals
 export const approvals = {
   async create(approval: Omit<Approval, 'id'>): Promise<string> {
+    if (!db) throw new Error('Firestore is not configured');
     const ref = doc(collection(db, COLLECTIONS.APPROVALS));
     const approvalData: any = {
       ...approval,
@@ -246,6 +259,7 @@ export const approvals = {
   },
 
   async getPending(): Promise<Approval[]> {
+    if (!db) throw new Error('Firestore is not configured');
     const q = query(
       collection(db, COLLECTIONS.APPROVALS),
       where('status', '==', 'pending'),
@@ -258,6 +272,7 @@ export const approvals = {
   },
 
   async update(id: string, updates: Partial<Approval>): Promise<void> {
+    if (!db) throw new Error('Firestore is not configured');
     const ref = doc(db, COLLECTIONS.APPROVALS, id);
     const updateData: any = { ...updates };
     if (updateData.reviewedAt) {
@@ -270,6 +285,7 @@ export const approvals = {
 // Analytics
 export const analytics = {
   async create(event: Omit<AnalyticsEvent, 'id'>): Promise<string> {
+    if (!db) throw new Error('Firestore is not configured');
     const ref = doc(collection(db, COLLECTIONS.ANALYTICS));
     const eventData: any = {
       ...event,
@@ -281,6 +297,7 @@ export const analytics = {
   },
 
   async getByExperiment(experimentId: string, limitCount: number = 1000): Promise<AnalyticsEvent[]> {
+    if (!db) throw new Error('Firestore is not configured');
     const q = query(
       collection(db, COLLECTIONS.ANALYTICS),
       where('experimentId', '==', experimentId),
