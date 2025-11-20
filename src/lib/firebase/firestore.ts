@@ -57,7 +57,7 @@ const dateToTimestamp = (date: Date): Timestamp => {
 
 // Helper function to convert document data with timestamps
 const convertTimestamps = <T extends DocumentData>(data: T): T => {
-  const converted = { ...data };
+  const converted: any = { ...data };
   for (const key in converted) {
     const value = converted[key];
     if (value && typeof value === 'object' && 'seconds' in value && 'nanoseconds' in value) {
@@ -68,7 +68,7 @@ const convertTimestamps = <T extends DocumentData>(data: T): T => {
       converted[key] = convertTimestamps(value as DocumentData);
     }
   }
-  return converted;
+  return converted as T;
 };
 
 // Helper to remove undefined fields (Firestore rejects undefined)
