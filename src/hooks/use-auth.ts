@@ -17,7 +17,7 @@ export function useAuth() {
 
   useEffect(() => {
     // Check if Firebase is configured
-    if (!auth) {
+    if (!auth || !db) {
       setLoading(false);
       return;
     }
@@ -62,6 +62,9 @@ export function useAuth() {
   }, []);
 
   const signIn = async () => {
+    if (!auth) {
+      throw new Error('Firebase Auth is not configured');
+    }
     try {
       await signInAnonymously(auth);
     } catch (error: any) {
@@ -71,6 +74,9 @@ export function useAuth() {
   };
 
   const signOut = async () => {
+    if (!auth) {
+      throw new Error('Firebase Auth is not configured');
+    }
     try {
       await firebaseSignOut(auth);
     } catch (error: any) {
