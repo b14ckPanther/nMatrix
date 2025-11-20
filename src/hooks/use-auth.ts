@@ -27,6 +27,13 @@ export function useAuth() {
       
       if (currentUser) {
         try {
+          // Check if Firebase is configured
+          if (!db) {
+            console.warn('Firestore is not configured');
+            setUserData({ role: 'user' });
+            return;
+          }
+
           // Get user data from Firestore
           const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
           if (userDoc.exists()) {
